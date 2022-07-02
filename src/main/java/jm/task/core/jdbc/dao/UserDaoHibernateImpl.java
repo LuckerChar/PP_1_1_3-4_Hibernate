@@ -29,65 +29,97 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        try (Session session = Util.getSessionfactory().openSession()) {
+        Session session = Util.getSessionfactory().openSession();
+        try {
             session.beginTransaction();
             session.createSQLQuery("CREATE TABLE users (id INTEGER NOT NULL AUTO_INCREMENT, name VARCHAR(45), lastname VARCHAR(45), age BIGINT(3), PRIMARY KEY (id))").executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             e.printStackTrace();
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public void dropUsersTable() {
-        try (Session session = Util.getSessionfactory().openSession()) {
+        Session session = Util.getSessionfactory().openSession();
+        try {
             session.beginTransaction();
             String sql = "DROP TABLE if exists User";
             session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
             session.getTransaction().commit();
             System.out.println("Таблица users удалена");
         } catch (Exception e) {
+            session.getTransaction().rollback();
             e.printStackTrace();
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-
-        try (Session session = Util.getSessionfactory().openSession()) {
+        Session session = Util.getSessionfactory().openSession();
+        try {
             session.beginTransaction();
-            session.createNativeQuery("INSERT INTO users (name, lastname, age) VALUES ('"+name+"', '"+lastName+"', '"+age+"')").executeUpdate();
+            session.createNativeQuery("INSERT INTO users (name, lastname, age) VALUES ('" + name + "', '" + lastName + "', '" + age + "')").executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             e.printStackTrace();
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public void removeUserById(long id) {
-        try (Session session = Util.getSessionfactory().openSession()) {
+        Session session = Util.getSessionfactory().openSession();
+        try {
             session.beginTransaction();
             session.createQuery("DELETE User WHERE id = :userid").setParameter("userid", id).executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             e.printStackTrace();
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        try (Session session = Util.getSessionfactory().openSession()) {
-            users = session.createQuery("from User").getResultList();
+        Session session = Util.getSessionfactory().openSession();
+        try {
+            session.beginTransaction();
+            users = session.createQuery("FROM User").list();
+            session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             e.printStackTrace();
+        } finally {
+            session.close();
         }
         return users;
     }
 
     @Override
     public void cleanUsersTable() {
-        dropUsersTable();
-        createUsersTable();
+        Session session = Util.getSessionfactory().openSession();
+        try {
+            session.beginTransaction();
+            session.createSQLQuery("TRUNCATE TABLE users").executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+
     }
 }
