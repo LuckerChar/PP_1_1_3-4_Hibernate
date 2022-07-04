@@ -64,7 +64,7 @@ public class UserDaoHibernateImpl implements UserDao {
         Session session = Util.getSessionfactory().openSession();
         try {
             session.beginTransaction();
-            session.createNativeQuery("INSERT INTO users (name, lastname, age) VALUES ('" + name + "', '" + lastName + "', '" + age + "')").executeUpdate();
+            session.save(new User(name, lastName, age));
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
