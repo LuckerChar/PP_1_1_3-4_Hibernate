@@ -29,7 +29,7 @@
 //
 //    public void dropUsersTable() {
 //        try (Statement statement = connection.createStatement()) {
-//            statement.execute("DROP TABLE IF EXISTS users");
+//            statement.execute("DROP TABLE IF EXISTS users"+username);
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }

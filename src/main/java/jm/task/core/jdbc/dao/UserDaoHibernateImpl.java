@@ -22,7 +22,9 @@ public class UserDaoHibernateImpl implements UserDao {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
-            session.createSQLQuery("CREATE TABLE users (id INTEGER NOT NULL AUTO_INCREMENT, name VARCHAR(45), lastname VARCHAR(45), age BIGINT(3), PRIMARY KEY (id))").executeUpdate();
+            session.createSQLQuery("CREATE TABLE IF NOT EXISTS users"
+                    + "(Id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(45) NOT NULL,"
+                    + "lastName VARCHAR(45) NOT NULL, age INTEGER NOT NULL)").executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -69,7 +71,7 @@ public class UserDaoHibernateImpl implements UserDao {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
-            session.createQuery("DELETE User WHERE id = :userid").setParameter("userid", id).executeUpdate();
+            session.createQuery("DELETE User WHERE id = : userid").setParameter("userid", id).executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
