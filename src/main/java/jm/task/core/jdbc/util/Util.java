@@ -16,15 +16,6 @@ import java.util.Properties;
 
 
 public final class Util {
-    private static Util util;
-
-    public static Util getUtil() {
-        if (util == null) {
-            util = new Util();
-        }
-        return util;
-    }
-
     public Util() {
     }
 
@@ -47,13 +38,10 @@ public final class Util {
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
                 settings.put(Environment.SHOW_SQL, "true");
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-
                 configuration.setProperties(settings);
                 configuration.addAnnotatedClass(User.class);
-
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties()).build();
-
                 sessionfactory = configuration.buildSessionFactory(serviceRegistry);
             } catch (Exception e) {
                 System.out.println("Hibernate: Нет коннекта к базе");
@@ -62,15 +50,16 @@ public final class Util {
         }
         return sessionfactory;
     }
-
-    public Connection getConnection() {
-        try {
-            return DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
+
+//    public Connection getConnection() {
+//        try {
+//            return DriverManager.getConnection(URL, USER, PASSWORD);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//}
 
 //    private static final Connection CONNECTION = createConnection();
 //
